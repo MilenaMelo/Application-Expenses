@@ -1,27 +1,46 @@
+/* eslint-disable eqeqeq */
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Router from 'vue-router'
 
-Vue.use(VueRouter)
+Vue.use(Router)
 
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+const router = new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      meta: {
+        icon: 'home', title: 'Home'
+      },
+      component: () => import(/* webpackChunkName: "home" */ '../pages/home/Home')
+    },
+    {
+      path: '/expenses-list',
+      name: 'expenses-list',
+      meta: {
+        icon: 'list-ul', title: 'Lista Gastos'
+      },
+      component: () => import(/* webpackChunkName: "expenses-list" */ '../pages/expenses-list/ExpensesList')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      meta: {
+        title: 'Home'
+      },
+      component: () => import(/* webpackChunkName: "login" */ '../pages/login/Login')
+    }
+  ]
+})
+
+router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title} - Expenses`
+
+  if (!window.uid && to.name !== 'login') {
+    next({ name: 'login' })
+  } else {
+    next()
   }
-]
-
-const router = new VueRouter({
-  routes
 })
 
 export default router
